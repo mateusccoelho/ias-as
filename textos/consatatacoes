@@ -1,0 +1,65 @@
+DIRETIVAS
+
+.org
+	Define em que palavra as instrucoes devem ser escritas.
+	Apenas muda a posicao das variaveis palavra.
+
+.wfill
+	Cria umas posicao de memoria com um dado.
+	
+
+.align
+	Define uma nova posicao onde as instrucoes devem ser escritas.
+	Apenas muda a posicao das variaveis palavra.
+
+
+.set
+	Cria uma constante.
+	Demanda uma lista.
+	Seu argumento tem no maximo 64 caracteres.
+	O segundo argumento sera sempre um numero na base hexadecimal ou decimal.
+
+.word
+	Cria uma posicao de memoria com um dado.
+	Deve escrever no arquivo.
+
+TIPOS DE DADOS
+
+Hexadecimal
+	Dez digitos em base hexadecimal antecipados por "0x"
+Decimal
+	Digitos sem quantidade fixa na base decimal, mas com um limite (min:max)
+Rot
+	Um rotulo, ou seja, caracteres alfanumericos que nao podem começar com numeros
+Sym
+	Caracteres alfanumericos que nao podem comecar com numeros
+
+INSTRUCOES
+	Serao referenciadas por um mnemonico e um dado em seguida, que pode ser
+	hexacimal, decimal ou rot. Esse argumento deve estar entre aspas.
+
+COMENTARIOS
+	Escritos apos o simbolo #
+
+ROTULOS
+	Maximo 64 caracteres, contando com :
+	
+ERROS
+	.word/.wfill utilizados no lado direito de uma palavra.
+	Conteudo do programa com mais de 1024 palavras.
+	Palavras reservadas com letras minusculas ou maiusculas.
+	Erros com respeito a digitacao errada de argumentos ou mnemonicos.
+	Dar argumentos para mnemonicos que nao aceitam argumentos.
+	
+LISTA DE COISAS QUE ALTERAM A PALAVRA E O LADO
+
+	Intrucoes
+	.org
+	.align
+	.word
+	.wfill
+	
+LISTA DE INSTRUCOES QUE NAO PRECISAM DE ARGUMENTO
+	LDmq 0A LOAD MQ
+	LSH  14 LSH
+	RSH  15 RSH

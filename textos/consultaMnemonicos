@@ -1,0 +1,20 @@
+LD	          	01					LOAD M(X)
+LD-				02					LOAD -M(X)
+LD|				03					LOAD |M(X)|
+LDmq			0A					LOAD MQ
+LDmq_mx			09					LOAD MQ,M(X)
+ST				21					STOR M(X)
+JMP 			0D					JUMP M(X,0:19) se o alvo for uma instrução à esquerda da palavra de memória (endereços to tipo HEX ou DEC sempre indicam endereços à esquerda enquanto que rótulos podem indicar endereços à esquerda ou direita).
+				0E					JUMP M(X,20:39) se o alvo for uma instrução à direita de uma palavra de memória.
+JUMP+ 			0F					JUMP+M(X,0:19) se o alvo for uma instrução à esquerda da palavra de memória (endereços to tipo HEX ou DEC sempre indicam endereços à esquerda enquanto que rótulos podem indicar endereços à esquerda ou direita).
+				10					JUMP+M(X,20:39) se o alvo for uma instrução à direita de uma palavra de memória.
+ADD				05					ADD M(X)
+ADD|			07					ADD |M(X)|
+SUB				06					SUB M(X)
+SUB|			08					SUB |M(X)|
+MUL				0B					MUL M(X)
+DIF				0C					DIV M(X)
+LSH				14					LSH
+RSH				15					RSH
+STaddr			12					STOR M(X,8:19) se X for o endereço de uma instrução à esquerda de uma palavra.
+				13					STOR M(X,28:39) se X for o endereço de uma instrução à direita de uma palavra. 
