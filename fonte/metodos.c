@@ -9,7 +9,7 @@
 
 int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 	FILE *ent;
-	char letra, comando[6], *argGen/*[65]*/, argGen2[65], argStrNum[13];
+	char letra, comando[6], *argGen/*[65]*/, *argGen2/*[65]*/, argStrNum[13];
 	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou;
 	long int argNum;
 	ent = fopen(nomeArq, "r");
@@ -164,7 +164,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 					for(aux = 0; aux < 17; aux++) {
 						if(strcmp(argGen, instrucoes[aux].mnemonico) == 0) {
 							if(aux != 3 && aux != 12 && aux != 13) {
-								fscanf(ent, "%*c");
+								if(ler(ent, &argGen2, &pulou) == 0) {
+									printf("deu pau\n");
+								}
+								else {
+									printf("a string: %s\n", argGen2);
+									i = isRot(argGen2, linha);	
+									if(i)
+										printf("DEU BOM FI DUMA EGUA\n");
+								}
+								/*fscanf(ent, "%*c");
 								i = 0;
 								do{
 									fscanf(ent, "%c", &letra);
@@ -180,7 +189,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 								else if(i == 3) {
 									printf("Erro na linha %d: %s eh um numero hexadecimal invalido\n", linha, argGen2);
 									codigoErro = -1;
-								}
+								}*/
 							}
 							break;
 						}

@@ -145,7 +145,7 @@ int isRot(char* dado, int linha) {
 		dado++; 
 		/* Decimal */
 		aux = isDec(dado);
-		if(aux) {
+		if(aux == 1) {
 			numero = atoi(dado);
 			if(numero <= 1023 && numero >= 0)
 				return 1;
@@ -156,14 +156,15 @@ int isRot(char* dado, int linha) {
 		}
 		/* Hexadecimal */
 		aux = isHex(dado);
-		if(aux)
+		printf("A verif: %d\n", aux);
+		if(aux == 1)
 			return 1;
 		if(aux == -1) {
 			printf("Erro na linha %d: \"%s\" eh um numero hexadecimal invalido\n", linha, dado);
 			return 0;
 		}
 		aux = isWord(dado);
-		if(aux)
+		if(aux == 1)
 			return 1;
 		printf("Erro na linha %d: \"%s\" eh um argumento de instrucao nao valido\n", linha, dado);
 		return 0;
