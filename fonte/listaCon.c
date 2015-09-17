@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "listaCon.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaCon.h"
 
 /* Inicializa a lista criando um no cabeca. */
 void lstCon_inicializar(NoLstCon** lista) {

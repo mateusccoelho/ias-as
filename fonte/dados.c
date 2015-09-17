@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "dados.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
 
 Instrucao instrucoes[17];
 

@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "listaRot.h"
-#include "listaCon.h"
-#include "dados.h"
-#include "argumentos.h"
-#include "leitura.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaRot.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaCon.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 
 int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 	FILE *ent;
@@ -160,33 +160,35 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 					printf("Erro na linha %d: %s eh uma instrucao invalida\n", linha, argGen);
 					codigoErro = -1;
 				}
-				for(aux = 0; aux < 17; aux++) {
-					if(strcmp(argGen, instrucoes[aux].mnemonico) == 0) {
-						if(aux != 3 && aux != 12 && aux != 13) {
-							fscanf(ent, "%*c");
-							i = 0;
-							do{
-								fscanf(ent, "%c", &letra);
-								argGen2[i] = letra;
-								i++;
-							} while(letra != '"');
-							argGen2[i - 1] = '\0';
-							i = isWrong(argGen2);
-							if(i == 0) {
-								printf("Erro na linha %d: %s eh um argumento invalido\n", linha, argGen2);
-								codigoErro = -1;
+				else {
+					for(aux = 0; aux < 17; aux++) {
+						if(strcmp(argGen, instrucoes[aux].mnemonico) == 0) {
+							if(aux != 3 && aux != 12 && aux != 13) {
+								fscanf(ent, "%*c");
+								i = 0;
+								do{
+									fscanf(ent, "%c", &letra);
+									argGen2[i] = letra;
+									i++;
+								} while(letra != '"');
+								argGen2[i - 1] = '\0';
+								i = isWrong(argGen2);
+								if(i == 0) {
+									printf("Erro na linha %d: %s eh um argumento invalido\n", linha, argGen2);
+									codigoErro = -1;
+								}
+								else if(i == 3) {
+									printf("Erro na linha %d: %s eh um numero hexadecimal invalido\n", linha, argGen2);
+									codigoErro = -1;
+								}
 							}
-							else if(i == 3) {
-								printf("Erro na linha %d: %s eh um numero hexadecimal invalido\n", linha, argGen2);
-								codigoErro = -1;
-							}
+							break;
 						}
-						break;
 					}
-				}
-				if(aux == 17) {
-					printf("Erro na linha %d: %s instrucao nao encontrada\n", linha, argGen);
-					codigoErro = -1;
+					if(aux == 17) {
+						printf("Erro na linha %d: %s instrucao nao encontrada\n", linha, argGen);
+						codigoErro = -1;
+					}
 				}
 			}
 		}

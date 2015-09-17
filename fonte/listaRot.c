@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "listaRot.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaRot.h"
 
 /* Inicializa a lista criando um no cabeca. */
 void lstRot_inicializar(NoLstRot** lista) {

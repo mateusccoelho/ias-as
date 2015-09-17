@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "leitura.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 
 /* Retorna se a leitura foi bem sucedida ou nao.
  * Vetor guarda o parametro lido. */

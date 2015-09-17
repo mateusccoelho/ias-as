@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "listaRot.h"
-#include "listaCon.h"
-#include "dados.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaRot.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaCon.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
 
 int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon);
 
