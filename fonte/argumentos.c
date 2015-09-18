@@ -68,6 +68,8 @@ int isRotulo(char *dado) {
 	return 0;
 }
 
+
+
 int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 	int aux;
 	/*Buscar se a constante lida esta na lista, caso contrario retornar erro.*/
@@ -141,6 +143,19 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 			return 1;
 		printf("Erro na linha %d: \"%s\" eh um argumento nao valido\n", linha, dado);
 		return 0;
+	}
+	else if(codigo == 5) { /* Rotulo */
+		aux = isRotulo(dado);
+		if(aux == 1) {
+			for(aux = 0; dado[aux] != '\0'; aux++);
+			dado[aux - 1] = '\0';
+			if(isWord(dado) == 1)
+				return 1;
+			else {
+				printf("Erro na linha %d: \"%s\" eh um rotulo nao valido\n", linha, dado);
+				return 0;
+			} 
+		}
 	}
 }
 
