@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
-/*
-long int toDecimal(char *dado) {
-	int i, j, valor;
-	for(i = 11, j = 0; i > 1; i--, j++) {
-		if(dado[i] != '0')
-	}
-}*/
 
 int isDiretiva(char* dado) {
 	return (dado[0] == '.');
@@ -16,9 +9,10 @@ int isDiretiva(char* dado) {
 
 int isHex(char *dado) {
 	int i;
-	
-	/* Verificar erro de tamanho de numero errado. */
+
 	if(dado[0] == '0' && dado[1] == 'x') {
+		if(strlen(dado) > 12)
+			return -1;
 		for(i = 0; i < 10; i++) {
 			if(!((dado[2 + i] >= 48 && dado[2 + i] <= 57) || (dado[2 + i] >= 65 && dado[2 + i] <= 70) || (dado[2 + i] >= 97 && dado[2 + i] <= 102))) {
 				return -1;
@@ -43,7 +37,6 @@ int isDec(char *dado, int min, unsigned int max) {
 			}
 		}
 	}
-	/*verificar se o numero esta no intervalo apropriado */
 	numero = atol(dado);
 	if(numero >= min && numero <= max)
 		return 1;
@@ -65,40 +58,6 @@ int isWord(char *dado) {
 	return 1; /*Eh palavra */
 }
 
-int isNumber(char *dado) {
-	int aux;
-	
-	if(isDec(dado, 00, 00) == 0) {
-		aux = isHex(dado);
-		if(aux == 0)
-			return 0; /* Nada */
-		else if(aux == -1)
-			return 2; /* hex invalid */
-		else
-			return 3; /* hex valid */
-	}
-	else 
-		return 1; /* decimal valido*/ 
-}
-
-int isWrong(char *dado) {
-	int aux;
-	
-	if(isWord(dado) == 0) {
-		aux = isNumber(dado);
-		if(aux == 0)
-			return 0;
-		else if(aux == 1)
-			return 2;
-		else if(aux == 2)
-			return 3;
-		else
-			return 4;
-	}
-	else
-		return 1;
-}
-
 int isRotulo(char *dado) {
 	int aux;
 	
@@ -109,17 +68,17 @@ int isRotulo(char *dado) {
 	return 0;
 }
 
-/*Funcao certinha*/
 int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 	int aux;
-	
+	/*Buscar se a constante lida esta na lista, caso contrario retornar erro.*/
 	if(codigo == 1) { /* SYM*/
-		if(isWord(dado)) {
+		if(isWord(dado) == 1) {
+			return 1;
+		}
+		else {
 			printf("Erro na linha %d: \"%s\" nao eh uma palavra valida\n", linha, dado);
 			return 0;
 		}
-		else
-			return 1;
 	}
 	else if(codigo == 2) { /* Numero: hex, dec*/
 		aux = isHex(dado);

@@ -4,7 +4,7 @@
 
 /* Retorna se a leitura foi bem sucedida ou nao.
  * Vetor guarda o parametro lido. */
-int ler(FILE *ent, char **vetor, int *pulou) {
+int ler(FILE *ent, char **vetor, int *pulou, int linha) {
 	int aux = 0, start = 0;
 	char letra;
 	(*vetor) = malloc(65 * sizeof(char));
@@ -21,6 +21,7 @@ int ler(FILE *ent, char **vetor, int *pulou) {
 			else {
 				/*Temos fim da linha e nada lido = DEU PAU*/	
 				free((*vetor));
+				printf("Erro na linha %d: leitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
 				return 0;
 			}
 		}
@@ -45,6 +46,7 @@ int ler(FILE *ent, char **vetor, int *pulou) {
 	else {
 		/*Temos fim da linha e nada lido = DEU PAU*/	
 		free((*vetor));
+		printf("Erro na linha %d: leitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
 		return 0;
 	}
 }
