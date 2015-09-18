@@ -7,37 +7,65 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 
-void verificarLinha() {
-
+/* vetor Tipos:       rotulo || diretiva || instrucao*/
+int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum) {
+	int i;
+	printf("passei aqui\n");
+	for(i = 0; i < 3; i++) {
+		if(tipos[i] > 1) {
+			if(i = 0)	
+				printf("Erro na linha %d: linha com mais de um rotulo\n", linha);
+			else if(i = 1)
+				printf("Erro na linha %d: linha com mais de uma diretiva\n", linha);
+			else
+				printf("Erro na linha %d: linha com mais de uma instrucao\n", linha);
+			return -1;
+		}
+	}
+	printf("passei aqui 2\n");
+	if(tipos[1] == 1 && tipos[2] == 1) {
+		printf("Erro na linha %d: linha com uma instrucao e uma diretiva\n", linha);
+		return -1;
+	}
+	printf("passei aqui 3\n");
+	if(ordemNum > 1 && ordem[0] == 'd' || ordem[0] == 'i') {
+		printf("Erro na linha %d: diretiva ou instrucao antes do rotulo\n", linha);
+		return -1;
+	}
+	printf("passei aqui 4\n");
+	for(i = 0; i < 3; i++)
+		tipos[i] = 0;
+	printf("vetor: %d %d %d\n", tipos[0], tipos[1], tipos[2]);
+	printf("passei aqui 5\n");
+	return 0;
 }
 
 int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 	FILE *ent;
-	char letra, comando[6], *argGen, *argGen2;
-	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou, tipos[4];
+	char letra, comando[6], *argGen, *argGen2, ordem[2];
+	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou, tipos[3], ordemNum = 0;
 	long int argNum;
 	ent = fopen(nomeArq, "r");
 	if(ent == NULL)
 		return -1;
 	
-	for(i = 0; i < 4; i++)
+	for(i = 0; i < 3; i++)
 		tipos[i] = 0;
 	
 	/* To-do:
-	 * 1. Verificar se as linhas estao sendo contadas direito 
-	 * 2. Verificar erro de instrucao sem argumento que recebe argumento.
-	 * 3. Implementar erro de mais de um instrucao ou diretiva por linha.
+	 * 1. Entender se a verificacao de erro na linha atrapalha o resto dos ifs.
+	 *    ATRAPALHA SIM, AJEITAR Parte de isntrucoes e rotulos
+	 *    Erro na linha 7: diretiva ou instrucao antes do rotulo
 	 */
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		printf("Palavra: %d Lado: %d\n", palavra, lado);
+		printf("vetor: %d %d %d\n", tipos[0], tipos[1], tipos[2]);
 		if(letra == '.') {
 			fscanf(ent, "%s", comando);
 			if(strcmp(comando, "align") == 0) {
 				if(ler(ent, &argGen, &pulou, linha) == 0)
 					codigoErro = -1;
 				else {
-					if(pulou == 1)
-						linha++;
 					if(isArg(3, argGen, linha, 0, 1023) == 0)
 						codigoErro = -1;
 					else {
@@ -58,6 +86,15 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 								lado = 0;
 							}
 						}
+						tipos[1]++;
+						if(ordemNum < 2)
+							ordem[ordemNum] = 'd';
+						ordemNum++;
+						if(pulou == 1) {
+							codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+							linha++;
+							ordemNum = 0;
+						}
 					}
 					free(argGen);
 				}
@@ -76,13 +113,26 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 						if(ler(ent, &argGen2, &pulou, linha) == 0)
 							codigoErro = -1;
 						else {
-							if(pulou == 1)
-								linha++;
 							if(isArg(2, argGen2, linha, 0, 2147483647) == 0)
 								codigoErro = -1;
-							else
+							else {
 								lstCon_inserir(lstCon, argGen, argGen2);
+								tipos[1]++;
+								if(ordemNum < 2)
+									ordem[ordemNum] = 'd';
+								ordemNum++;
+							}
 							free(argGen2);
+							if(pulou == 1) {
+								codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);								
+								linha++;
+								ordemNum = 0;
+							}
+							if(pulou == 1) {
+								codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);								
+								linha++;
+								ordemNum = 0;
+							}
 						}
 					}
 					free(argGen);
@@ -92,8 +142,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 				if(ler(ent, &argGen, &pulou, linha) == 0)
 					codigoErro = -1;
 				else {
-					if(pulou == 1)
-						linha++;
 					if(isArg(2, argGen, linha, 0, 1023) == 0)
 						codigoErro = -1;
 					else {
@@ -112,6 +160,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 							palavra = atoi(argGen);
 							lado = 0;
 						}
+						tipos[1]++;
+						if(ordemNum < 2)
+							ordem[ordemNum] = 'd';
+						ordemNum++;
+						if(pulou == 1) {
+							printf("passei aqui org\n");
+							codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+							linha++;
+							ordemNum = 0;
+						}
 					}
 					free(argGen);
 				}
@@ -120,8 +178,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 				if(ler(ent, &argGen, &pulou, linha) == 0)
 					codigoErro = -1;
 				else {
-					if(pulou == 1)
-						linha++;
 					if(isArg(4, argGen, linha, 0, 4294967295) == 0)
 						codigoErro = -1;
 					else {
@@ -130,6 +186,15 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 						else {
 							printf("Erro na linha %d: alocacao de dado na memoria irregular, use align\n", linha);
 							codigoErro = -1;
+						}
+						tipos[1]++;
+						if(ordemNum < 2)
+							ordem[ordemNum] = 'd';
+						ordemNum++;
+						if(pulou == 1) {
+							codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+							linha++;
+							ordemNum = 0;
 						}
 					}
 					free(argGen);
@@ -149,8 +214,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 						if(ler(ent, &argGen2, &pulou, linha) == 0)
 							codigoErro = -1;
 						else {
-							if(pulou == 1)
-								linha++;
 							if(isArg(4, argGen2, linha, -2147483648, 2147483647) == 0)
 								codigoErro = -1;
 							else {
@@ -159,6 +222,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 								else {
 									printf("Erro na linha %d: alocacao de dado na memoria irregular, use align\n", linha);
 									codigoErro = -1;
+								}
+								tipos[1]++;
+								if(ordemNum < 2)
+									ordem[ordemNum] = 'd';
+								ordemNum++;
+								if(pulou == 1) {
+									printf("passei aqui wfill\n");
+									codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+									linha++;
+									ordemNum = 0;
 								}
 							}
 							free(argGen2);
@@ -174,17 +247,18 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 		}
 		else if(letra == '#') {
 			while(fscanf(ent, "%c", &letra) != EOF && letra != '\n');
+			codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
 			linha++;
+			ordemNum = 0;
 		}
 		else if((letra >= 65 && letra <= 90) || (letra >= 97 && letra <= 122) || (letra >= 48 && letra <= 57) || letra == '_') {
-			aux = 0;			
+			aux = 0;
+			argGen = malloc(65 * sizeof(char));			
 			do{
 				argGen[aux] = letra;
 				aux++;
 				fscanf(ent, "%c", &letra);
 			} while(letra != ' ' && letra != '\n');
-			if(letra == '\n')
-				linha++;
 			argGen[aux] = '\0';
 			if(argGen[aux - 1] == ':') {
 				argGen[aux - 1] = '\0';
@@ -192,9 +266,19 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 					printf("Erro na linha %d: %s eh um rotulo invalido\n", linha, argGen);
 					codigoErro = -1;
 				}
-				else
+				else {
 					lstRot_inserir(lstRot, argGen, palavra, lado);
-			}
+					tipos[0]++;
+					if(ordemNum < 2)
+						ordem[ordemNum] = 'r';
+					ordemNum++;
+					if(letra == '\n' && codigoErro == 0) {
+						codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+						linha++;
+						ordemNum = 0;
+					}
+				}
+			}		
 			else {
 				if(isArg(1, argGen, linha, 0, 0) == 0) {
 					printf("Erro na linha %d: %s eh uma instrucao invalida\n", linha, argGen);
@@ -207,8 +291,11 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 								if(ler(ent, &argGen2, &pulou, linha) == 0)
 									codigoErro = -1;
 								else {
-									if(pulou == 1)
+									if(pulou == 1) {
+										codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
 										linha++;
+										ordemNum = 0;
+									}
 									if(isInstArg(argGen2, linha, 0, 1023) == 0)
 										codigoErro = -1;
 									else {
@@ -220,8 +307,36 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 										else {
 											lado = 1;
 										}
+										tipos[2]++;
+										if(ordemNum < 2)
+											ordem[ordemNum] = 'i';
+										ordemNum++;
+										if(letra == '\n' && codigoErro == 0) {
+											codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+											linha++;
+											ordemNum = 0;
+										}
 									}
 									free(argGen2);	
+								}
+							}
+							else {
+								/* avancar */
+								if(lado == 1) {
+									palavra++;
+									lado = 0;
+								}
+								else {
+									lado = 1;
+								}
+								tipos[2]++;
+								if(ordemNum < 2)
+									ordem[ordemNum] = 'i';
+								ordemNum++;
+								if(letra == '\n' && codigoErro == 0) {
+									codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+									linha++;
+									ordemNum = 0;
 								}
 							}
 							break;
@@ -236,14 +351,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 			free(argGen);
 		}
 		else if(letra == '\n') {
+			codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
 			linha++;
+			ordemNum = 0;
 		}
 		else if(letra != '	' && letra != ' ') {
 			printf("Erro na linha %d: %c eh um caractere invalido\n", linha, letra);
 			codigoErro = -1;
 		}
 	}
-	
+	printf("Palavra: %d Lado: %d\n", palavra, lado);
 	fclose(ent);
 	return codigoErro;
 }

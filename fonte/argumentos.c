@@ -184,6 +184,7 @@ int isInstArg(char* dado, int linha, int min, unsigned int max) {
 			printf("Erro na linha %d: \"%s\" eh um numero hexadecimal invalido\n", linha, dado);
 			return 0;
 		}
+		/* Rotulo */
 		aux = isWord(dado);
 		if(aux == 1)
 			return 1;
