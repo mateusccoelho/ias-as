@@ -14,7 +14,7 @@ int isWrong(char *dado);
 int isWord(char *dado);
 
 /* Verifica se eh um numero decimal. */
-int isDec(char *dado);
+int isDec(char *dado, int min, unsigned int max);
 
 /* Verifica se eh um numero hexacimal.
  * Retorna 0: nao eh hexadecimal
@@ -30,3 +30,7 @@ int isHex(char *dado);
  *         3: hexadecimal valido
  */
 int isNumber(char *dado);
+
+int isDiretiva(char* dado);
+int isArg(int codigo, char* dado, int linha, int min, unsigned int max);
+int isInstArg(char* dado, int linha, int min, unsigned int max);

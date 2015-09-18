@@ -29,7 +29,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 			fscanf(ent, "%s", comando);
 			if(strcmp(comando, "align") == 0) {
 				fscanf(ent, "%*c%s", argStrNum);
-				if(isDec(argStrNum) == 0) {
+				if(isDec(argStrNum, 0, 0) == 0) {
 					printf("Erro na linha %d: %s eh um numero decimal invalido\n", linha, argStrNum);
 					codigoErro = -1;
 				}
@@ -107,12 +107,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 					printf("deu pau\n");
 				}
 				else {
-					printf("a string: %s\n", argGen);	
+					printf("a string: %s\n", argGen);
+					if(isArg(4, argGen, linha, 0, 4294967295) == 1)
+						printf("deu certo o teste de arg\n");
+					else
+						printf("nao deu certo o teste de arg\n");
 				}
 			}
 			else if(strcmp(comando, "wfill") == 0) {
 				fscanf(ent, "%*c%s%*c%s", argStrNum, argGen);
-				if(isDec(argStrNum) == 0) {
+				if(isDec(argStrNum, 0,0 ) == 0) {
 					printf("Erro na linha %d: %s eh um numero decimal invalido\n", linha, argStrNum);
 					codigoErro = -1;
 				}
@@ -169,7 +173,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 								}
 								else {
 									printf("a string: %s\n", argGen2);
-									i = isRot(argGen2, linha);	
+									i = isInstArg(argGen2, linha);	
 									if(i)
 										printf("DEU BOM FI DUMA EGUA\n");
 								}
