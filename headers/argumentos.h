@@ -25,3 +25,5 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max);
 
 /* Verifica se o argumento de uma instrucao eh valido. */
 int isInstArg(char* dado, int linha, int min, unsigned int max);
+
+char* decToHex(long int decimal);

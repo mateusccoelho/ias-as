@@ -53,8 +53,10 @@ NoLstRot* lstRot_procurar(NoLstRot* lista, char *nome) {
 	NoLstRot *aux, *procurado = NULL;
 	
 	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
-		if(strcmp(nome, aux -> local -> nome	) == 0)
+		if(strcmp(nome, aux -> local -> nome) == 0) {
 			procurado = aux;
+			break;
+		}
 	}
 	return procurado;
 }

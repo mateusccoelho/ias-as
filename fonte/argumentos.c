@@ -3,6 +3,43 @@
 #include <string.h>
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 
+char* decToHex(long int decimal) {
+	int temp, i = 0;
+	char *hex, *aux;
+	
+	hex = malloc(11 * sizeof(char));
+	
+	while(decimal != 0) {
+		temp = decimal % 16;
+
+		if(temp < 10)
+			temp = temp + 48;
+		else
+			temp = temp + 55;
+
+		hex[i]= temp;
+		i++;
+		decimal /= 16;
+	}
+	hex[i] = '\0';
+	
+	/* Inverter string */
+	temp = strlen(hex);
+	aux = malloc(11 * sizeof(char));
+	if(temp < 10) {
+		for(i = 0; i < (10 - temp); i++)
+			aux[i] = '0';
+	}
+	else
+		i = 0;
+	while(i < 10) {
+		aux[i] = hex[10 - i - 1];
+		i++;
+	}
+	aux[i] = '\0';
+	return aux;
+}
+
 int isDiretiva(char* dado) {
 	return (dado[0] == '.');
 }

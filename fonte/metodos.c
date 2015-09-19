@@ -8,9 +8,14 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 
+/* To-Do:
+ * 1. implementar conversao de numero decimal negativo 
+ */
+
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	FILE *ent;
-	NoLstCon *lstCon;
+	NoLstCon *lstCon, *auxC;
+	NoLstRot *auxR;
 	char letra, comando[6], *argGen, *argGen2;
 	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou;
 	long int argNum;
@@ -19,7 +24,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	if(ent == NULL)
 		return -1;
 	lstCon_inicializar(&lstCon);
-	
+	lstRot_imprimir(lstRot);
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
 			fscanf(ent, "%s", comando);
@@ -51,6 +56,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
 				lstCon_inserir(lstCon, argGen, argGen2);
+				lstCon_imprimir(lstCon);
 				if(pulou == 1)
 					linha++;
 				free(argGen2);
@@ -73,7 +79,34 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				free(argGen);
 			}
 			else if(strcmp(comando, "word") == 0) {
+				/* OK */
 				ler(ent, &argGen, &pulou, linha);
+				if(argGen[0] == '0' && argGen[1] == 'x')
+					lstPal_inserir(lstPal, palavra, argGen+2);
+				else if(argGen[0] >= 48 && argGen[0] <= 57)
+					lstPal_inserir(lstPal, palavra, decToHex(atol(argGen)));
+				else if(isRotulo(argGen) == 1) {
+					auxR = lstRot_procurar(lstRot, argGen);
+					if(auxR == NULL) {
+						printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen);
+						codigoErro = -1;
+					}
+					else
+						lstPal_inserir(lstPal, palavra, decToHex(auxR -> local -> palavra));
+				}
+				else {
+					auxC = lstCon_procurar(lstCon, argGen);
+					if(auxC == NULL) {
+						printf("Erro na linha %d: a constante \"%s\" nao foi encontrada\n", linha, argGen);
+						codigoErro = -1;
+					}
+					else {
+						if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
+							lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
+						else
+							lstPal_inserir(lstPal, palavra, decToHex(atol(auxC -> local -> real)));
+					}
+				}
 				palavra++;
 				if(pulou == 1)
 					linha++;
@@ -82,7 +115,38 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 			else if(strcmp(comando, "wfill") == 0) {
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
-				palavra = palavra + atoi(argGen) - 1;
+				aux = atoi(argGen);
+				for(i = 0; i < aux; i++) {
+					if(argGen2[0] == '0' && argGen2[1] == 'x') {
+						lstPal_inserir(lstPal, palavra, argGen2+2);
+					}
+					else if(argGen2[0] >= 48 && argGen2[0] <= 57) {
+						lstPal_inserir(lstPal, palavra, decToHex(atol(argGen2)));
+					}
+					else if(isRotulo(argGen2) == 1) {
+						auxR = lstRot_procurar(lstRot, argGen2);
+						if(auxR == NULL) {
+							printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen2);
+							codigoErro = -1;
+						}
+						else
+							lstPal_inserir(lstPal, palavra, decToHex(auxR -> local -> palavra));
+					}
+					else {
+						auxC = lstCon_procurar(lstCon, argGen2);
+						if(auxC == NULL) {
+							printf("Erro na linha %d: a constante \"%s\" nao foi encontrada\n", linha, argGen2);
+							codigoErro = -1;
+						}
+						else {
+							if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
+								lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
+							else
+								lstPal_inserir(lstPal, palavra, decToHex(atol(auxC -> local -> real)));
+						}
+					}
+					palavra++;
+				}
 				if(pulou == 1)
 					linha++;
 				free(argGen2);
@@ -136,8 +200,8 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 		}
 		else if(letra == '\n')
 			linha++;
-		printf("rodei\n");
 	}
+	lstPal_imprimir(lstPal);
 }
 
 /* vetor Tipos:       rotulo || diretiva || instrucao*/
@@ -179,9 +243,8 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 	
 	for(i = 0; i < 3; i++)
 		tipos[i] = 0;
-	
+	printf("rodei\n");
 	/* To-do:
-	 * 1. Criar erro de constante nao declarada
 	 * 2. "LD-" nao eh uma palavra valida
 	 */
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
@@ -335,7 +398,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 								codigoErro = -1;
 							else {
 								if(lado == 0)
-									palavra = palavra + atoi(argGen) - 1;
+									palavra += atoi(argGen);
 								else {
 									printf("Erro na linha %d: alocacao de dado na memoria irregular, use align\n", linha);
 									codigoErro = -1;
@@ -383,6 +446,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 					codigoErro = -1;
 				}
 				else {
+					argGen[aux - 1] = ':';
 					lstRot_inserir(lstRot, argGen, palavra, lado);
 					tipos[0]++;
 					if(ordemNum < 2)
@@ -471,7 +535,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 			printf("Erro na linha %d: %c eh um caractere invalido\n", linha, letra);
 			codigoErro = -1;
 		}
-		printf("rodei\n");
 	}
 	fclose(ent);
 	return codigoErro;
