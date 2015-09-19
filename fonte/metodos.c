@@ -7,6 +7,139 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 
+int gerarMapa(char *nomeArq, NoLstRot *lstRot) {
+	FILE *ent;
+	NoLstCon *lstCon;
+	char letra, comando[6], *argGen, *argGen2;
+	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou;
+	long int argNum;
+	
+	ent = fopen(nomeArq, "r");
+	if(ent == NULL)
+		return -1;
+	lstCon_inicializar(&lstCon);
+	for(i = 0; i < 3; i++)
+		tipos[i] = 0;
+	
+	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
+		if(letra == '.') {
+			fscanf(ent, "%s", comando);
+			if(strcmp(comando, "align") == 0) {
+				/* OK */
+				ler(ent, &argGen, &pulou, linha);
+				argNum = atol(argGen);
+				for(aux = 0; aux <= palavra; aux += argNum);
+				if(lado == 0) {
+					if(aux != palavra)
+						palavra = aux;
+				}
+				else {
+					if(aux == palavra) {
+						palavra = aux + argNum;
+						lado = 0;
+					}
+					else {
+						palavra = argNum;
+						lado = 0;
+					}
+				}
+				if(pulou == 1)
+					linha++;
+				free(argGen);
+			}
+			else if(strcmp(comando, "set") == 0) {
+				/* OK */
+				ler(ent, &argGen, &pulou, linha);
+				ler(ent, &argGen2, &pulou, linha);
+				lstCon_inserir(lstCon, argGen, argGen2);
+				if(pulou == 1)
+					linha++;
+				free(argGen2);
+				free(argGen);
+			}
+			else if(strcmp(comando, "org") == 0) {
+				/* OK */
+				ler(ent, &argGen, &pulou, linha);
+				if(argGen[1] == 'x') {
+					sscanf(argGen, "%x", &aux);
+					palavra = aux;
+					lado = 0;
+				}
+				else {
+					palavra = atoi(argGen);
+					lado = 0;
+				}
+				if(pulou == 1)
+					linha++;
+				free(argGen);
+			}
+			else if(strcmp(comando, "word") == 0) {
+				ler(ent, &argGen, &pulou, linha);
+				palavra++;
+				if(pulou == 1)
+					linha++;
+				free(argGen);
+			}
+			else if(strcmp(comando, "wfill") == 0) {
+				ler(ent, &argGen, &pulou, linha);
+				ler(ent, &argGen2, &pulou, linha);
+				palavra = palavra + atoi(argGen) - 1;
+				if(pulou == 1)
+					linha++;
+				free(argGen2);
+				free(argGen);
+			}
+		}
+		else if(letra == '#') {
+			while(fscanf(ent, "%c", &letra) != EOF && letra != '\n');
+			linha++;
+		}
+		else if((letra >= 65 && letra <= 90) || (letra >= 97 && letra <= 122) || (letra >= 48 && letra <= 57) || letra == '_') {
+			aux = 0;
+			argGen = malloc(65 * sizeof(char));			
+			
+			do{
+				argGen[aux] = letra;
+				aux++;
+				fscanf(ent, "%c", &letra);
+			} while(letra != ' ' && letra != '\n');
+			argGen[aux] = '\0';
+			
+			if(argGen[aux - 1] == ':') {
+				if(letra == '\n' && codigoErro == 0)
+					linha++;
+			}		
+			else {
+				for(aux = 0; aux < 17; aux++) {
+					if(strcmp(argGen, instrucoes[aux].mnemonico) == 0) {
+						if(aux != 3 && aux != 12 && aux != 13) {
+							ler(ent, &argGen2, &pulou, linha);
+							if(pulou == 1)
+								linha++;
+							free(argGen2);
+						}
+						else {
+							if(letra == '\n')
+								linha++;
+						}
+						if(lado == 1) {
+							palavra++;
+							lado = 0;
+						}
+						else
+							lado = 1;
+						break;
+					}
+				}
+				free(argGen);
+			}
+		}
+		else if(letra == '\n')
+			linha++;
+		printf("rodei\n");
+	}
+}
+
 /* vetor Tipos:       rotulo || diretiva || instrucao*/
 int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum) {
 	int i;
@@ -61,7 +194,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 					if(isArg(3, argGen, linha, 0, 1023) == 0)
 						codigoErro = -1;
 					else {
-						/*Verificar se eh isso mesmo*/
 						argNum = atol(argGen);
 						for(aux = 0; aux <= palavra; aux += argNum);
 						if(lado == 0) {
@@ -108,7 +240,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
 							if(isArg(2, argGen2, linha, 0, 2147483647) == 0)
 								codigoErro = -1;
 							else {
-								lstCon_inserir(lstCon, argGen, argGen2);
 								tipos[1]++;
 								if(ordemNum < 2)
 									ordem[ordemNum] = 'd';
