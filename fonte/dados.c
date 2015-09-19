@@ -36,11 +36,11 @@ void inicializarDados() {
 	strcpy(instrucoes[12].hex, "14");
 	strcpy(instrucoes[13].mnemonico, "RSH");
 	strcpy(instrucoes[13].hex, "15");
-	strcpy(instrucoes[14].mnemonico, "JUMP");
-	strcpy(instrucoes[14].hex, "01");
+	strcpy(instrucoes[14].mnemonico, "JUMP+");
+	strcpy(instrucoes[14].hex, "0x");
 	strcpy(instrucoes[15].mnemonico, "JMP");
-	strcpy(instrucoes[15].hex, "01");
-	strcpy(instrucoes[16].mnemonico, "LD");
-	strcpy(instrucoes[16].hex, "01");
-
+	strcpy(instrucoes[15].hex, "0x");
+	strcpy(instrucoes[16].mnemonico, "STaddr");
+	strcpy(instrucoes[16].hex, "0x");
+	printf("%s\n", instrucoes[16].mnemonico);
 }

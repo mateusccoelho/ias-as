@@ -177,7 +177,6 @@ int isInstArg(char* dado, int linha, int min, unsigned int max) {
 		}
 		/* Hexadecimal */
 		aux = isHex(dado);
-		printf("A verif: %d\n", aux);
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {

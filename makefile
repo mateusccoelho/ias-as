@@ -2,7 +2,7 @@ argumentos.o: /home/mateus/Unicamp/MC404/trab01/fonte/argumentos.c
 	gcc -c /home/mateus/Unicamp/MC404/trab01/fonte/argumentos.c -o /home/mateus/Unicamp/MC404/trab01/argumentos.o
 
 dados.o: /home/mateus/Unicamp/MC404/trab01/fonte/dados.c
-	gcc -c dados.c -o /home/mateus/Unicamp/MC404/trab01/dados.o
+	gcc -c /home/mateus/Unicamp/MC404/trab01/fonte/dados.c -o /home/mateus/Unicamp/MC404/trab01/dados.o
 
 leitura.o: /home/mateus/Unicamp/MC404/trab01/fonte/leitura.c
 	gcc -c /home/mateus/Unicamp/MC404/trab01/fonte/leitura.c -o /home/mateus/Unicamp/MC404/trab01/leitura.o
