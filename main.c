@@ -2,21 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaRot.h"
-#include "/home/mateus/Unicamp/MC404/trab01/headers/listaCon.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
 
-int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon);
+int mapearRotulos(char *nomeArq, NoLstRot *lstRot);
+int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal);
+int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum);
 
 int main (int argc, char *argv[]) {
 	
 	int codigo = 0;
 	NoLstRot *lstRot;
-	NoLstCon *lstCon;
+	NoLstPal *lstPal;
 	
 	lstRot_inicializar(&lstRot);
-	lstCon_inicializar(&lstCon);
+	lstPal_inicializar(&lstPal);
 	inicializarDados();
-	codigo = mapearRotulos(argv[1], lstRot, lstCon);
+	codigo = mapearRotulos(argv[1], lstRot);
 	/*if(argc == 2) {
 		codigo = mapearRotulos(argv[1], lstRot);
 	}

@@ -6,8 +6,9 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 
-int gerarMapa(char *nomeArq, NoLstRot *lstRot) {
+int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	FILE *ent;
 	NoLstCon *lstCon;
 	char letra, comando[6], *argGen, *argGen2;
@@ -18,8 +19,6 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot) {
 	if(ent == NULL)
 		return -1;
 	lstCon_inicializar(&lstCon);
-	for(i = 0; i < 3; i++)
-		tipos[i] = 0;
 	
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
@@ -121,6 +120,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot) {
 						else {
 							if(letra == '\n')
 								linha++;
+							
 						}
 						if(lado == 1) {
 							palavra++;
@@ -168,7 +168,7 @@ int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum) {
 	return 0;
 }
 
-int mapearRotulos(char *nomeArq, NoLstRot *lstRot, NoLstCon *lstCon) {
+int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 	FILE *ent;
 	char letra, comando[6], *argGen, *argGen2, ordem[2];
 	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou, tipos[3], ordemNum = 0;

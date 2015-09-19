@@ -7,27 +7,27 @@ struct Palavra {
 };
 typedef struct Palavra Palavra;
 
-/* Estrutura da lista ligada que contem rotulos. */
+/* Estrutura da lista ligada que contem palavras de memoria. */
 struct NoLstPal {
 	Palavra *local;
-	struct NoLstRot *prox, *ant;
+	struct NoLstPal *prox, *ant;
 };
 typedef struct NoLstPal NoLstPal;
 
-/* Remove um rotulo da lista. */
+/* Remove uma palavra da lista. */
 void lstPal_remover(NoLstPal *alvo);
 
-/* Procura o rotulo com um nome especifico e retorna-o. */
-NoLstPal* lstPal_procurar(NoLstPal* lista, char *nome);
+/* Procura uma palavra especifica e retorna-a. */
+NoLstPal* lstPal_procurar(NoLstPal* lista, int key);
 
-/* Insere um novo no aa lista, o que corresponde a um novo rotulo.
+/* Insere um novo no aa lista, o que corresponde a uma nova palavra.
  * Retorna o endereco do novo elemento. */
-NoLstPal* lstPal_inserir(NoLstPal *lista, char *nomeDado, int pal, int lad);
+NoLstPal* lstPal_inserir(NoLstPal *lista, int numPal, char *c1, char *e1, char *c2, char *e2);
 
 /* Inicializa a lista criando um no cabeca. */
 void lstPal_inicializar(NoLstPal** lista);
 
-/* Imprime o rotulo presente em cada no da lista. */
+/* Imprime a palavra presente em cada no da lista. */
 void lstPal_imprimir(NoLstPal *lista);
 
 /* Remove todos os nos da lista. */

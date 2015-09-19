@@ -11,20 +11,25 @@ void lstPal_inicializar(NoLstPal** lista) {
 	(*lista) -> prox = NULL;
 }
 
-NoLstPal* lstPal_inserir(NoLstPal *lista, char *nomeDado, int pal, int lad) {
-	NoLstRot *novo;
-	Rotulo *rot;
+NoLstPal* lstPal_inserir(NoLstPal *lista, int numPal, char *c1, char *e1, char *c2, char *e2) {
+	NoLstPal *novo;
+	Palavra *pal;
 	
-	/* Criacao do rotulo. */
-	rot = malloc(sizeof(Rotulo));
-	rot -> nome = malloc(65 * sizeof(char));
-	strcpy(rot -> nome, nomeDado);
-	rot -> palavra = pal;
-	rot -> lado = lad;
-	
+	/* Criacao da palavra. */
+	pal = malloc(sizeof(Palavra));
+	pal -> palavra = numPal;
+	pal -> cod1 = malloc(3 * sizeof(char));
+	pal -> cod2 = malloc(3 * sizeof(char));
+	pal -> end1 = malloc(4 * sizeof(char));
+	pal -> end2 = malloc(4 * sizeof(char));
+	strcpy(pal -> cod1, c1);
+	strcpy(pal -> cod2, c2);
+	strcpy(pal -> end1, e1);
+	strcpy(pal -> end2, e2);
+		
 	/* Atualizacao do encadeamento da lista */
-	novo = malloc(sizeof(NoLstRot));
-	novo -> local = rot;
+	novo = malloc(sizeof(NoLstPal));
+	novo -> local = pal;
 	if(lista -> prox != NULL)
 		lista -> prox -> ant = novo;
 	novo -> ant = lista;
@@ -35,7 +40,7 @@ NoLstPal* lstPal_inserir(NoLstPal *lista, char *nomeDado, int pal, int lad) {
 }
 
 /* Arruma o encadeamento da lista e libera a memoria. */
-void lstRot_remover(NoLstRot *alvo) {
+void lstPal_remover(NoLstPal *alvo) {
 	if(alvo -> prox == NULL) {
 		alvo -> ant -> prox = NULL;	
 	}
@@ -43,36 +48,41 @@ void lstRot_remover(NoLstRot *alvo) {
 		alvo -> ant -> prox = alvo -> prox;
 		alvo -> prox -> ant = alvo -> ant;
 	}
-	free(alvo -> local -> nome);
+	free(alvo -> local -> cod1);
+	free(alvo -> local -> end1);
+	free(alvo -> local -> cod2);
+	free(alvo -> local -> end2);
 	free(alvo -> local);
 	free(alvo);
 }
 
-/* Retorna o rotulo cujo nome eh igual ao dado na funcao. */
-NoLstRot* lstRot_procurar(NoLstRot* lista, char *nome) {
-	NoLstRot *aux, *procurado = NULL;
+/* Retorna a palavra cujo ID eh igual ao dado na funcao. */
+NoLstPal* lstPal_procurar(NoLstPal* lista, int key) {
+	NoLstPal *aux, *procurado = NULL;
 	
 	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
-		if(strcmp(nome, aux -> local -> nome	) == 0)
+		if(aux -> local -> palavra == key)
 			procurado = aux;
 	}
 	return procurado;
 }
 
-/* Percorre a lista imprimindo os dados de cada rotulo. */
-void lstRot_imprimir(NoLstRot *lista) {
-	NoLstRot *aux;
+/* Percorre a lista imprimindo os dados de cada palavra. */
+void lstPal_imprimir(NoLstPal *lista) {
+	NoLstPal *aux;
+	Palavra *aux2;
 	
 	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
-		printf("Rotulo: %s, palavra: %d, lado %d\n", aux -> local -> nome, aux -> local -> palavra, aux -> local -> lado);
+		aux2 = aux -> local;
+		printf("Palavra: %d, Memoria: %s %s %s %s\n", aux2 -> palavra, aux2 -> cod1, aux2 -> end1, aux2 -> cod2, aux2 -> end2);
 	}
 }
 
 /* Remove todos os nos da lista. */
-void lstPal_removerTudo(NoLstRot* lista) {
-	NoLstRot *aux;
+void lstPal_removerTudo(NoLstPal* lista) {
+	NoLstPal *aux;
 	
 	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
-		lstRot_remover(aux);
+		lstPal_remover(aux);
 	}
 }
