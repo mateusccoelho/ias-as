@@ -3,41 +3,49 @@
 #include <string.h>
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 
-char* decToHex(long int decimal) {
+char* decToHex(long int decimal, int tam) {
 	int temp, i = 0;
 	char *hex, *aux;
 	
-	hex = malloc(11 * sizeof(char));
-	
-	while(decimal != 0) {
-		temp = decimal % 16;
+	if(decimal == 0) {
+		if(tam == 10) return "0000000000";
+		else return "000";
+	}
+	else {
+		hex = malloc((tam + 1) * sizeof(char));
+		aux = malloc((tam + 1) * sizeof(char));
+		while(decimal != 0) {
+			temp = decimal % 16;
 
-		if(temp < 10)
-			temp = temp + 48;
+			if(temp < 10)
+				temp = temp + 48;
+			else
+				temp = temp + 55;
+
+			hex[i]= temp;
+			i++;
+			decimal /= 16;
+		}
+		hex[i] = '\0';
+	
+		/*acrescenta zeros*/
+		temp = strlen(hex);
+		if(temp < tam) {
+			for(i = 0; i < (tam - temp); i++)
+				aux[i] = '0';
+		}
 		else
-			temp = temp + 55;
-
-		hex[i]= temp;
-		i++;
-		decimal /= 16;
+			i = 0;
+			
+		/* Inverter string */
+		while(i < tam) {
+			aux[i] = hex[tam - i - 1];
+			i++;
+		}
+		aux[i] = '\0';
+		
+		return aux;
 	}
-	hex[i] = '\0';
-	
-	/* Inverter string */
-	temp = strlen(hex);
-	aux = malloc(11 * sizeof(char));
-	if(temp < 10) {
-		for(i = 0; i < (10 - temp); i++)
-			aux[i] = '0';
-	}
-	else
-		i = 0;
-	while(i < 10) {
-		aux[i] = hex[10 - i - 1];
-		i++;
-	}
-	aux[i] = '\0';
-	return aux;
 }
 
 int isDiretiva(char* dado) {
@@ -79,6 +87,20 @@ int isDec(char *dado, int min, unsigned int max) {
 		return 1;
 	else
 		return -1;
+}
+
+int isInstr(char *dado) {
+	int i;
+	
+	if(!((dado[0] >= 65 && dado[0] <= 90) || (dado[0] >= 97 && dado[0] <= 122) || dado[0] == '_'))
+		return 0;
+	else {
+		for(i = 1; dado[i] != '\0'; i++) {
+			if(!((dado[i] >= 65 && dado[i] <= 90) || (dado[i] >= 97 && dado[i] <= 122) || (dado[i] >= 48 && dado[i] <= 57) || dado[i] == '_' || dado[i] == '|' || dado[i] == '-' || dado[i] == '+'))
+				return 0;
+		}	
+	}
+	return 1; /*Eh instrucao */
 }
 
 int isWord(char *dado) {
@@ -181,17 +203,12 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 		printf("Erro na linha %d: \"%s\" eh um argumento nao valido\n", linha, dado);
 		return 0;
 	}
-	else if(codigo == 5) { /* Rotulo */
-		aux = isRotulo(dado);
-		if(aux == 1) {
-			for(aux = 0; dado[aux] != '\0'; aux++);
-			dado[aux - 1] = '\0';
-			if(isWord(dado) == 1)
-				return 1;
-			else {
-				printf("Erro na linha %d: \"%s\" eh um rotulo nao valido\n", linha, dado);
-				return 0;
-			} 
+	else if(codigo == 5) { /* Instrucao */
+		if(isInstr(dado) == 1)
+			return 1;
+		else {
+			printf("Erro na linha %d: \"%s\" nao eh uma instrucao valida\n", linha, dado);
+			return 0;
 		}
 	}
 }
