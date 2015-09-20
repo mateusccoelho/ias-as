@@ -10,7 +10,9 @@
 
 /* To-Do:
  * 1. implementar conversao de numero decimal negativo
- * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024 
+ * 2. o programa nao quita entre o passo 2 e a impressao
+ * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024
+ * 4. implementar saida na sterro 
  */
 
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
@@ -25,7 +27,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	if(ent == NULL)
 		return -1;
 	lstCon_inicializar(&lstCon);
-	lstRot_imprimir(lstRot);
+	/*lstRot_imprimir(lstRot);*/
 	memoria[0] = '\0';
 	/*printf("P2    Palavra: %d Lado: %d\n", palavra, lado);*/
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
@@ -64,7 +66,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
 				lstCon_inserir(lstCon, argGen, argGen2);
-				lstCon_imprimir(lstCon);
+				/*lstCon_imprimir(lstCon);*/
 				if(pulou == 1)
 					linha++;
 				free(argGen2);
@@ -272,7 +274,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 		lstPal_inserir(lstPal, palavra, memoria);
 	}
 	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
-	lstPal_imprimir(lstPal);
+	/*lstPal_imprimir(lstPal);*/
 	lstCon_removerTudo(lstCon);
 	lstRot_removerTudo(lstRot);
 	fclose(ent);
@@ -318,7 +320,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 	
 	for(i = 0; i < 3; i++)
 		tipos[i] = 0;
-	printf("rodei\n");
+	/*printf("rodei\n");
 	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
 	/* To-do:
 	 */
@@ -404,7 +406,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						if(argGen[1] == 'x') {
 							sscanf(argGen, "%x", &aux);
 							if(aux > 1023) {
-								printf("Erro na linha %d: \"%s\" ultrapassa o valor aceitavel de um endereco de palavra\n", linha, argGen);
+								printf("Erro na linha %d: numero hexacimal \"%s\" ultrapassa o valor aceitavel de um endereco de palavra\n", linha, argGen);
 								codigoErro = -1;
 							}
 							else {
@@ -498,7 +500,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 				}
 			}
 			else {
-				printf("Erro na linha %d: %s diretiva nao encontrada\n", linha, comando);
+				printf("Erro na linha %d: diretiva \"%s\" nao encontrada\n", linha, comando);
 				codigoErro = -1;
 			}
 		}
@@ -595,7 +597,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						}
 					}
 					if(aux == 17) {
-						printf("Erro na linha %d: %s instrucao nao encontrada\n", linha, argGen);
+						printf("Erro na linha %d: instrucao \"%s\" nao encontrada\n", linha, argGen);
 						codigoErro = -1;
 					}
 				}

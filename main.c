@@ -25,7 +25,8 @@ int main (int argc, char *argv[]) {
 	if(codigo == 0) {
 		codigo = gerarMapa(argv[1], lstRot, lstPal);
 		if(codigo == 0) {
-			/*lstPal_ordenar(lstPal);*/
+			/*lstPal_imprimir(lstPal);*/
+			lstPal_ordenar(lstPal);
 			if(argc == 2)
 				imprimirTela(lstPal);
 			else if(argc == 3)

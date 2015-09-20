@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 
 void imprimirTela(NoLstPal *lstPal) {
 	NoLstPal *aux;

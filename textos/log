@@ -1,22 +1,9 @@
 TESTES ESTRANHOS
 
-14
-add
+20
+vinte
 
-21
-LD rotulo2:
 
 22
 .org 0x000
 
-TESTES ERRADOS
-
-13
-LD- "10"
-Erro na linha 3: "LD-" nao eh uma palavra valida
-Erro na linha 3: LD- eh uma instrucao invalida
-
-20
-varx: .word 1
-Erro na linha 13: linha com uma instrucao e uma diretiva
-Erro na linha 16: STaddr instrucao nao encontrada

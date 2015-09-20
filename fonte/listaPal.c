@@ -79,5 +79,39 @@ void lstPal_removerTudo(NoLstPal* lista) {
 }
 
 void lstPal_ordenar(NoLstPal *lista) {
-	/* Ordenacao */
+	NoLstPal *aux, *aux2, *menor, *antM, *auxD;
+	
+	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
+		menor = aux;
+		/* Busca pelo no com o menor ID */
+		for(aux2 = aux -> prox; aux2 != NULL; aux2 = aux2 -> prox)
+			if(aux2 -> local -> palavra < menor -> local -> palavra)
+				menor = aux2;
+		/* Troca */
+		/*printf("menor %d\n", menor -> local -> palavra);*/
+		if(menor != aux) {
+			aux -> ant -> prox = menor;
+			antM = menor -> ant;
+			menor -> ant = aux -> ant;
+			if(aux -> prox != menor) {
+				aux -> ant = antM;
+				auxD = aux -> prox;
+				aux -> prox -> ant = menor;
+				if(menor -> prox != NULL)
+					menor -> prox -> ant = aux;
+				aux -> prox = menor -> prox;
+				menor -> prox = auxD;
+				antM -> prox = aux;
+			}
+			else {
+				if(menor -> prox != NULL)
+					menor -> prox -> ant = aux;
+				aux -> prox = menor -> prox;
+				menor -> prox = aux;
+				aux -> ant = menor;
+			}
+			aux = menor;
+		}
+		/*lstPal_imprimir(lista);*/
+	}
 }

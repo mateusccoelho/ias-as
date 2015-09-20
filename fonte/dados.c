@@ -42,5 +42,4 @@ void inicializarDados() {
 	strcpy(instrucoes[15].hex, "0D");
 	strcpy(instrucoes[16].mnemonico, "STaddr");
 	strcpy(instrucoes[16].hex, "12");
-	printf("%s\n", instrucoes[16].mnemonico);
 }
