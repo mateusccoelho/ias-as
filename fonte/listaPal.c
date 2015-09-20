@@ -77,3 +77,7 @@ void lstPal_removerTudo(NoLstPal* lista) {
 		lstPal_remover(aux);
 	}
 }
+
+void lstPal_ordenar(NoLstPal *lista) {
+	/* Ordenacao */
+}

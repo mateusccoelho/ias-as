@@ -32,3 +32,6 @@ void lstPal_imprimir(NoLstPal *lista);
 
 /* Remove todos os nos da lista. */
 void lstPal_removerTudo(NoLstPal* lista);
+
+/* Ordena as palavras pelo seu ID. */
+void lstPal_ordenar(NoLstPal *lista);

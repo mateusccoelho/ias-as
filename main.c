@@ -4,6 +4,7 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaRot.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/saida.h"
 
 int mapearRotulos(char *nomeArq, NoLstRot *lstRot);
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal);
@@ -24,12 +25,11 @@ int main (int argc, char *argv[]) {
 	if(codigo == 0) {
 		codigo = gerarMapa(argv[1], lstRot, lstPal);
 		if(codigo == 0) {
-			/*if(argc == 2) {
-				codigo = mapearRotulos(argv[1], lstRot);
-			}
-			else if(argc == 3) {
-				codigo = mapearRotulos(argv[1], lstRot);
-			}*/
+			/*lstPal_ordenar(lstPal);*/
+			if(argc == 2)
+				imprimirTela(lstPal);
+			else if(argc == 3)
+				codigo = imprimirArquivo(lstPal, argv[2]);
 		}
 	}
 		

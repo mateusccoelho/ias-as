@@ -3,7 +3,7 @@
 
 /* Estrutura que modela as instrucoes na linguagem IAS. */
 struct Instrucao {
-	char mnemonico[6], hex[3];
+	char mnemonico[8], hex[3];
 };
 typedef struct Instrucao Instrucao;
 

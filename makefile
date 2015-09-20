@@ -19,11 +19,14 @@ metodos.o: /home/mateus/Unicamp/MC404/trab01/fonte/metodos.c
 listaPal.o: /home/mateus/Unicamp/MC404/trab01/fonte/listaPal.c
 	gcc -c /home/mateus/Unicamp/MC404/trab01/fonte/listaPal.c -o /home/mateus/Unicamp/MC404/trab01/listaPal.o
 
+saida.o: /home/mateus/Unicamp/MC404/trab01/fonte/saida.c
+	gcc -c /home/mateus/Unicamp/MC404/trab01/fonte/saida.c -o /home/mateus/Unicamp/MC404/trab01/saida.o
+
 main.o: main.c
 	gcc -c main.c -o main.o
 	
-prog: argumentos.o dados.o leitura.o listaRot.o listaCon.o metodos.o listaPal.o main.o
-	gcc dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o listaPal.o leitura.o -o prog
+prog: argumentos.o dados.o leitura.o listaRot.o listaCon.o metodos.o listaPal.o main.o saida.o
+	gcc dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o listaPal.o leitura.o saida.o -o prog
 
 clean:
-	rm -f dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o leitura.o listaPal.o prog
+	rm -f dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o leitura.o listaPal.o saida.o prog

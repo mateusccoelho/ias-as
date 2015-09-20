@@ -9,7 +9,8 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 
 /* To-Do:
- * 1. implementar conversao de numero decimal negativo 
+ * 1. implementar conversao de numero decimal negativo
+ * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024 
  */
 
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
@@ -26,7 +27,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	lstCon_inicializar(&lstCon);
 	lstRot_imprimir(lstRot);
 	memoria[0] = '\0';
-	printf("P2    Palavra: %d Lado: %d\n", palavra, lado);
+	/*printf("P2    Palavra: %d Lado: %d\n", palavra, lado);*/
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
 			fscanf(ent, "%s", comando);
@@ -214,9 +215,9 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 									codigoErro = -1;
 								}
 								else{
-									printf("rotulo encontrado %d\n", auxR -> local -> palavra);
+									/*printf("rotulo encontrado %d\n", auxR -> local -> palavra);*/
 									strcpy(end, decToHex(auxR -> local -> palavra, 3));
-									printf("caca: %s\n", end);
+									/*printf("caca: %s\n", end);*/
 									if(aux >=  14 && aux <= 16) {
 										if(auxR -> local -> lado == 0)
 											strcpy(cod, instrucoes[aux].hex);
@@ -244,10 +245,10 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 								linha++;
 						}
 						/* processamento de palavra */
-						printf("cod %s end %s\n", cod, end);
+						/*printf("cod %s end %s\n", cod, end);*/
 						strcat(memoria, cod);
 						strcat(memoria, end);
-						printf("memoria: %s\n", memoria);
+						/*printf("memoria: %s\n", memoria);*/
 						if(lado == 1) {
 							lstPal_inserir(lstPal, palavra, memoria);
 							memoria[0] = '\0';
@@ -270,8 +271,12 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 		strcat(memoria, "00000");
 		lstPal_inserir(lstPal, palavra, memoria);
 	}
-	printf("P1    Palavra: %d Lado: %d\n", palavra, lado);
+	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
 	lstPal_imprimir(lstPal);
+	lstCon_removerTudo(lstCon);
+	lstRot_removerTudo(lstRot);
+	fclose(ent);
+	return codigoErro;
 }
 
 /* vetor Tipos:       rotulo || diretiva || instrucao*/
@@ -314,9 +319,8 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 	for(i = 0; i < 3; i++)
 		tipos[i] = 0;
 	printf("rodei\n");
-	printf("P1    Palavra: %d Lado: %d\n", palavra, lado);
+	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
 	/* To-do:
-	 * 1. resolver problema do tamanho das instrucoes
 	 */
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
@@ -607,7 +611,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 			printf("Erro na linha %d: %c eh um caractere invalido\n", linha, letra);
 			codigoErro = -1;
 		}
-		printf("P1    Palavra: %d Lado: %d\n", palavra, lado);
+		/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
 	}
 	fclose(ent);
 	return codigoErro;
