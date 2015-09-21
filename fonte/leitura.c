@@ -21,7 +21,7 @@ int ler(FILE *ent, char **vetor, int *pulou, int linha) {
 			else {
 				/*Temos fim da linha e nada lido = DEU PAU*/	
 				free((*vetor));
-				printf("Erro na linha %d: leitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
+				fprintf(stderr, "ERROR on line %d\nLeitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
 				return 0;
 			}
 		}
@@ -46,7 +46,7 @@ int ler(FILE *ent, char **vetor, int *pulou, int linha) {
 	else {
 		/*Temos fim da linha e nada lido = DEU PAU*/	
 		free((*vetor));
-		printf("Erro na linha %d: leitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
+		fprintf(stderr, "ERROR on line %d\nLeitura de parametro de diretiva ou instrucao mal sucedida\n", linha);
 		return 0;
 	}
 }

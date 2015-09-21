@@ -136,7 +136,7 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 			return 1;
 		}
 		else {
-			printf("Erro na linha %d: \"%s\" nao eh uma palavra valida\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh uma palavra valida\n", linha, dado);
 			return 0;
 		}
 	}
@@ -145,17 +145,17 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero hexadecimal invalido\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero hexadecimal invalido\n", linha, dado);
 			return 0;
 		}
 		aux = isDec(dado, min, max);
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
 			return 0;
 		}
-		printf("Erro na linha %d: \"%s\" nao eh um argumento de numero valido\n", linha, dado);
+		fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh um argumento de numero valido\n", linha, dado);
 		return 0;
 	}
 	else if(codigo == 3) { /* Decimal */
@@ -163,11 +163,11 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 		if(aux == 1)
 			return 1;
 		else if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
 			return 0;
 		}
 		else {
-			printf("Erro na linha %d: \"%s\" nao eh um numero decimal\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh um numero decimal\n", linha, dado);
 		}
 	}
 	else if(codigo == 4) { /* Tudo: hex, dec, rot, SYM */
@@ -175,14 +175,14 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero hexadecimal invalido\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero hexadecimal invalido\n", linha, dado);
 			return 0;
 		}
 		aux = isDec(dado, min, max);
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
 			return 0;
 		}
 		aux = isRotulo(dado);
@@ -192,21 +192,21 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 			if(isWord(dado) == 1)
 				return 1;
 			else {
-				printf("Erro na linha %d: \"%s\" eh um rotulo nao valido\n", linha, dado);
+				fprintf(stderr, "ERROR on line %d\n\"%s\" eh um rotulo nao valido\n", linha, dado);
 				return 0;
 			} 
 		}
 		aux = isWord(dado);
 		if(aux == 1)
 			return 1;
-		printf("Erro na linha %d: \"%s\" eh um argumento nao valido\n", linha, dado);
+		fprintf(stderr, "ERROR on line %d\n\"%s\" eh um argumento nao valido\n", linha, dado);
 		return 0;
 	}
 	else if(codigo == 5) { /* Instrucao */
 		if(isInstr(dado) == 1)
 			return 1;
 		else {
-			printf("Erro na linha %d: \"%s\" nao eh uma instrucao valida\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh uma instrucao valida\n", linha, dado);
 			return 0;
 		}
 	}
@@ -225,7 +225,7 @@ int isInstArg(char* dado, int linha, int min, unsigned int max) {
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero decimal fora do padrao de tamanho\n", linha, dado);
 			return 0;
 		}
 		/* Hexadecimal */
@@ -233,18 +233,18 @@ int isInstArg(char* dado, int linha, int min, unsigned int max) {
 		if(aux == 1)
 			return 1;
 		if(aux == -1) {
-			printf("Erro na linha %d: \"%s\" eh um numero hexadecimal invalido\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um numero hexadecimal invalido\n", linha, dado);
 			return 0;
 		}
 		/* Rotulo */
 		aux = isWord(dado);
 		if(aux == 1)
 			return 1;
-		printf("Erro na linha %d: \"%s\" eh um argumento de instrucao nao valido\n", linha, dado);
+		fprintf(stderr, "ERROR on line %d\n\"%s\" eh um argumento de instrucao nao valido\n", linha, dado);
 		return 0;
 	}
 	else {
-		printf("Erro na linha %d: \"%s\" nao eh um argumento de instrucao\n", linha, dado);
+		fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh um argumento de instrucao\n", linha, dado);
 		return 0;
 	}	
 }

@@ -12,10 +12,6 @@
 /* To-Do:
  * 1. implementar conversao de numero decimal negativo
  * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024
- * 4. implementar saida na sterro
- * OK 5. revisao no metodos.c
- * OK 6. revisao nos headers
- * 7. Passa valgrind 
  */
 
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
@@ -109,7 +105,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				else if(isRotulo(argGen) == 1) {
 					auxR = lstRot_procurar(lstRot, argGen);
 					if(auxR == NULL) {
-						printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen);
+						fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" nao foi encontrado\n", linha, argGen);
 						codigoErro = -1;
 					}
 					else {
@@ -122,7 +118,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				else {
 					auxC = lstCon_procurar(lstCon, argGen);
 					if(auxC == NULL) {
-						printf("Erro na linha %d: a constante \"%s\" nao foi encontrada\n", linha, argGen);
+						fprintf(stderr, "ERROR on line %d\nConstante \"%s\" nao foi encontrada\n", linha, argGen);
 						codigoErro = -1;
 					}
 					else {
@@ -158,7 +154,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 					else if(isRotulo(argGen2) == 1) {
 						auxR = lstRot_procurar(lstRot, argGen2);
 						if(auxR == NULL) {
-							printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen2);
+							fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" nao foi encontrado\n", linha, argGen2);
 							codigoErro = -1;
 							break;
 						}
@@ -172,7 +168,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 					else {
 						auxC = lstCon_procurar(lstCon, argGen2);
 						if(auxC == NULL) {
-							printf("Erro na linha %d: a constante \"%s\" nao foi encontrada\n", linha, argGen2);
+							fprintf(stderr, "ERROR on line %d\nConstante \"%s\" nao foi encontrada\n", linha, argGen2);
 							codigoErro = -1;
 							break;
 						}
@@ -242,7 +238,7 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 								auxS[i - 1] = ':';
 								auxR = lstRot_procurar(lstRot, auxS);
 								if(auxR == NULL) {
-									printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, auxS);
+									fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" nao foi encontrado\n", linha, auxS);
 									codigoErro = -1;
 								}
 								else{
@@ -315,21 +311,21 @@ int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum) {
 	for(i = 0; i < 3; i++) {
 		if(tipos[i] > 1) {
 			if(i = 0)	
-				printf("Erro na linha %d: linha com mais de um rotulo\n", linha);
+				fprintf(stderr, "ERROR on line %d\nLinha com mais de um rotulo\n", linha);
 			else if(i = 1)
-				printf("Erro na linha %d: linha com mais de uma diretiva\n", linha);
+				fprintf(stderr, "ERROR on line %d\nLinha com mais de uma diretiva\n", linha);
 			else
-				printf("Erro na linha %d: linha com mais de uma instrucao\n", linha);
+				fprintf(stderr, "ERROR on line %d\nLinha com mais de uma instrucao\n", linha);
 			return -1;
 		}
 	}
 	if(tipos[1] == 1 && tipos[2] == 1) {
-		printf("Erro na linha %d: linha com uma instrucao e uma diretiva\n", linha);
+		fprintf(stderr, "ERROR on line %d\nLinha com uma instrucao e uma diretiva\n", linha);
 		return -1;
 	}
 
 	if(ordemNum > 1 && (ordem[0] == 'd' || ordem[0] == 'i')) {
-		printf("Erro na linha %d: diretiva ou instrucao antes do rotulo\n", linha);
+		fprintf(stderr, "ERROR on line %d\nDiretiva ou instrucao antes do rotulo\n", linha);
 		return -1;
 	}
 	for(i = 0; i < 3; i++)
@@ -393,7 +389,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 					codigoErro = -1;
 				else {
 					if(pulou == 1) {
-						printf("Erro na linha %d: a diretiva tem apenas um parametro nesse linha\n", linha);
+						fprintf(stderr, "ERROR on line %d\nDiretiva tem apenas um parametro nesse linha\n", linha);
 						codigoErro = -1;
 					}
 					else if(isArg(1, argGen, linha, 0, 0) == 0)
@@ -431,7 +427,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						if(argGen[1] == 'x') {
 							sscanf(argGen, "%x", &aux);
 							if(aux > 1023) {
-								printf("Erro na linha %d: numero hexacimal \"%s\" ultrapassa o valor aceitavel de um endereco de palavra\n", linha, argGen);
+								fprintf(stderr, "ERROR on line %d\nNumero hexacimal \"%s\" ultrapassa o valor aceitavel de um endereco de palavra\n", linha, argGen);
 								codigoErro = -1;
 							}
 							else {
@@ -466,7 +462,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						codigoErro = -1;
 					else {
 						if(lado == 1) {
-							printf("Erro na linha %d: alocacao de dado na memoria irregular, use align\n", linha);
+							fprintf(stderr, "ERROR on line %d\nAlocacao de dado na memoria irregular, use align\n", linha);
 							codigoErro = -1;
 						}
 						else {
@@ -490,7 +486,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 					codigoErro = -1;
 				else {
 					if(pulou == 1) {
-						printf("Erro na linha %d: a diretiva tem apenas um parametro nesse linha\n", linha);
+						fprintf(stderr, "ERROR on line %d\nDiretiva tem apenas um parametro nesse linha\n", linha);
 						codigoErro = -1;
 					}
 					else if(isArg(3, argGen, linha, 0, 1023) == 0)
@@ -503,7 +499,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 								codigoErro = -1;
 							else {
 								if(lado == 1) {
-									printf("Erro na linha %d: alocacao de dado na memoria irregular, use align\n", linha);
+									fprintf(stderr, "ERROR on line %d\nAlocacao de dado na memoria irregular, use align\n", linha);
 									codigoErro = -1;
 								}	
 								else {
@@ -526,7 +522,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 				}
 			}
 			else {
-				printf("Erro na linha %d: diretiva \"%s\" nao encontrada\n", linha, comando);
+				fprintf(stderr, "ERROR on line %d\nDiretiva \"%s\" nao encontrada\n", linha, comando);
 				codigoErro = -1;
 			}
 		}
@@ -622,7 +618,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						}
 					}
 					if(aux == 17) {
-						printf("Erro na linha %d: instrucao \"%s\" nao encontrada\n", linha, argGen);
+						fprintf(stderr, "ERROR on line %d\nInstrucao \"%s\" nao encontrada\n", linha, argGen);
 						codigoErro = -1;
 					}
 				}
@@ -635,7 +631,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 			ordemNum = 0;
 		}
 		else if(letra != '	' && letra != ' ') {
-			printf("Erro na linha %d: %c eh um caractere invalido\n", linha, letra);
+			fprintf(stderr, "ERROR on line %d\nO caractere \"%c\" eh invalido\n", linha, letra);
 			codigoErro = -1;
 		}
 	}
