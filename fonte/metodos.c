@@ -7,29 +7,32 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/argumentos.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/leitura.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
+#include "/home/mateus/Unicamp/MC404/trab01/headers/metodos.h"
 
 /* To-Do:
  * 1. implementar conversao de numero decimal negativo
- * 2. o programa nao quita entre o passo 2 e a impressao
  * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024
- * 4. implementar saida na sterro 
+ * 4. implementar saida na sterro
+ * OK 5. revisao no metodos.c
+ * OK 6. revisao nos headers
+ * 7. Passa valgrind 
  */
 
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	FILE *ent;
 	NoLstCon *lstCon, *auxC;
 	NoLstRot *auxR;
-	char letra, comando[6], *argGen, *argGen2, *auxS, cod[3], end[4], memoria[11];
+	char letra, comando[6], *argGen, *argGen2, *auxS, *auxS2, cod[3], end[4], memoria[11];
 	int i, aux, palavra = 0, lado = 0, codigoErro = 0, linha = 1, pulou;
 	long int argNum;
 	
 	ent = fopen(nomeArq, "r");
 	if(ent == NULL)
 		return -1;
+	
 	lstCon_inicializar(&lstCon);
-	/*lstRot_imprimir(lstRot);*/
 	memoria[0] = '\0';
-	/*printf("P2    Palavra: %d Lado: %d\n", palavra, lado);*/
+	
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
 			fscanf(ent, "%s", comando);
@@ -66,7 +69,6 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
 				lstCon_inserir(lstCon, argGen, argGen2);
-				/*lstCon_imprimir(lstCon);*/
 				if(pulou == 1)
 					linha++;
 				free(argGen2);
@@ -98,16 +100,24 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen, &pulou, linha);
 				if(argGen[0] == '0' && argGen[1] == 'x')
 					lstPal_inserir(lstPal, palavra, argGen+2);
-				else if(argGen[0] >= 48 && argGen[0] <= 57)
-					lstPal_inserir(lstPal, palavra, decToHex(atol(argGen), 10));
+				else if(argGen[0] >= 48 && argGen[0] <= 57) {
+					auxS = decToHex(atol(argGen), 10);
+					lstPal_inserir(lstPal, palavra, auxS);
+					if(strcmp(auxS, "0000000000") != 0)
+						free(auxS);
+				}
 				else if(isRotulo(argGen) == 1) {
 					auxR = lstRot_procurar(lstRot, argGen);
 					if(auxR == NULL) {
 						printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen);
 						codigoErro = -1;
 					}
-					else
-						lstPal_inserir(lstPal, palavra, decToHex(auxR -> local -> palavra, 10));
+					else {
+						auxS = decToHex(auxR -> local -> palavra, 10);
+						lstPal_inserir(lstPal, palavra, auxS);
+						if(strcmp(auxS, "0000000000") != 0)
+							free(auxS);
+					}
 				}
 				else {
 					auxC = lstCon_procurar(lstCon, argGen);
@@ -118,8 +128,12 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 					else {
 						if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
 							lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
-						else
-							lstPal_inserir(lstPal, palavra, decToHex(atol(auxC -> local -> real), 10));
+						else {
+							auxS = decToHex(atol(auxC -> local -> real), 10);
+							lstPal_inserir(lstPal, palavra, auxS);
+							if(strcmp(auxS, "0000000000") != 0)
+								free(auxS);
+						}
 					}
 				}
 				palavra++;
@@ -133,32 +147,44 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen2, &pulou, linha);
 				aux = atoi(argGen);
 				for(i = 0; i < aux; i++) {
-					if(argGen2[0] == '0' && argGen2[1] == 'x') {
+					if(argGen2[0] == '0' && argGen2[1] == 'x')
 						lstPal_inserir(lstPal, palavra, argGen2+2);
-					}
 					else if(argGen2[0] >= 48 && argGen2[0] <= 57) {
-						lstPal_inserir(lstPal, palavra, decToHex(atol(argGen2), 10));
+						auxS = decToHex(atol(argGen2), 10);
+						lstPal_inserir(lstPal, palavra, auxS);
+						if(strcmp(auxS, "0000000000") != 0)
+							free(auxS);
 					}
 					else if(isRotulo(argGen2) == 1) {
 						auxR = lstRot_procurar(lstRot, argGen2);
 						if(auxR == NULL) {
 							printf("Erro na linha %d: o rotulo \"%s\" nao foi encontrado\n", linha, argGen2);
 							codigoErro = -1;
+							break;
 						}
-						else
-							lstPal_inserir(lstPal, palavra, decToHex(auxR -> local -> palavra, 10));
+						else {
+							auxS = decToHex(auxR -> local -> palavra, 10);
+							lstPal_inserir(lstPal, palavra, auxS);
+							if(strcmp(auxS, "0000000000") != 0)
+								free(auxS);
+						}
 					}
 					else {
 						auxC = lstCon_procurar(lstCon, argGen2);
 						if(auxC == NULL) {
 							printf("Erro na linha %d: a constante \"%s\" nao foi encontrada\n", linha, argGen2);
 							codigoErro = -1;
+							break;
 						}
 						else {
 							if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
 								lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
-							else
-								lstPal_inserir(lstPal, palavra, decToHex(atol(auxC -> local -> real), 10));
+							else {
+								auxS = decToHex(atol(auxC -> local -> real), 10);
+								lstPal_inserir(lstPal, palavra, auxS);
+								if(strcmp(auxS, "0000000000") != 0)
+									free(auxS);
+							}
 						}
 					}
 					palavra++;
@@ -206,8 +232,11 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 								strcpy(end, auxS+9);
 							}
 							else if(auxS[0] >= 48 && auxS[0] <= 57) {
+								auxS2 = decToHex(atoi(auxS), 3);
 								strcpy(cod, instrucoes[aux].hex);
-								strcpy(end, decToHex(atoi(auxS), 3));
+								strcpy(end, auxS2);
+								if(strcmp(auxS2, "000") != 0)	
+									free(auxS2);
 							}
 							else {   /*Um rotulo */
 								auxS[i - 1] = ':';
@@ -217,9 +246,10 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 									codigoErro = -1;
 								}
 								else{
-									/*printf("rotulo encontrado %d\n", auxR -> local -> palavra);*/
-									strcpy(end, decToHex(auxR -> local -> palavra, 3));
-									/*printf("caca: %s\n", end);*/
+									auxS2 = decToHex(auxR -> local -> palavra, 3);
+									strcpy(end, auxS2);
+									if(strcmp(auxS2, "000") != 0)
+										free(auxS2);
 									if(aux >=  14 && aux <= 16) {
 										if(auxR -> local -> lado == 0)
 											strcpy(cod, instrucoes[aux].hex);
@@ -247,10 +277,8 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 								linha++;
 						}
 						/* processamento de palavra */
-						/*printf("cod %s end %s\n", cod, end);*/
 						strcat(memoria, cod);
 						strcat(memoria, end);
-						/*printf("memoria: %s\n", memoria);*/
 						if(lado == 1) {
 							lstPal_inserir(lstPal, palavra, memoria);
 							memoria[0] = '\0';
@@ -262,19 +290,19 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 						break;
 					}
 				}
-				free(argGen);
 			}
+			free(argGen);
 		}
 		else if(letra == '\n')
 			linha++;
 	}
+	
 	/*Verifica o termino da leitura com palavra meio preenchida.*/
 	if(lado == 1) {
 		strcat(memoria, "00000");
 		lstPal_inserir(lstPal, palavra, memoria);
 	}
-	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
-	/*lstPal_imprimir(lstPal);*/
+	
 	lstCon_removerTudo(lstCon);
 	lstRot_removerTudo(lstRot);
 	fclose(ent);
@@ -320,10 +348,7 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 	
 	for(i = 0; i < 3; i++)
 		tipos[i] = 0;
-	/*printf("rodei\n");
-	/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
-	/* To-do:
-	 */
+		
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
 		if(letra == '.') {
 			fscanf(ent, "%s", comando);
@@ -418,14 +443,16 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 							palavra = atoi(argGen);
 							lado = 0;
 						}
-						tipos[1]++;
-						if(ordemNum < 2)
-							ordem[ordemNum] = 'd';
-						ordemNum++;
-						if(pulou == 1) {
-							codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
-							linha++;
-							ordemNum = 0;
+						if(codigoErro == 0) {
+							tipos[1]++;
+							if(ordemNum < 2)
+								ordem[ordemNum] = 'd';
+							ordemNum++;
+							if(pulou == 1) {
+								codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+								linha++;
+								ordemNum = 0;
+							}
 						}
 					}
 					free(argGen);
@@ -454,7 +481,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 								ordemNum = 0;
 							}
 						}
-						
 					}
 					free(argGen);
 				}
@@ -512,22 +538,23 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 		}
 		else if((letra >= 65 && letra <= 90) || (letra >= 97 && letra <= 122) || (letra >= 48 && letra <= 57) || letra == '_') {
 			aux = 0;
-			argGen = malloc(65 * sizeof(char));			
+			argGen = malloc(65 * sizeof(char));
+			/* Le alguma coisa */			
 			do{
 				argGen[aux] = letra;
 				aux++;
 				fscanf(ent, "%c", &letra);
 			} while(letra != ' ' && letra != '\n');
 			argGen[aux] = '\0';
+			/* Verifica se eh rotulo */
 			if(argGen[aux - 1] == ':') {
 				argGen[aux - 1] = '\0';
-				if(isArg(1, argGen, linha, 0, 0) == 0) {
-					printf("Erro na linha %d: %s eh um rotulo invalido\n", linha, argGen);
+				if(isArg(1, argGen, linha, 0, 0) == 0)
 					codigoErro = -1;
-				}
 				else {
 					argGen[aux - 1] = ':';
 					lstRot_inserir(lstRot, argGen, palavra, lado);
+					
 					tipos[0]++;
 					if(ordemNum < 2)
 						ordem[ordemNum] = 'r';
@@ -538,13 +565,13 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 						ordemNum = 0;
 					}
 				}
-			}		
+			}
+			/* caso contrario eh instrucao */		
 			else {
 				if(isArg(5, argGen, linha, 0, 0) == 0)
 					codigoErro = -1;
 				else {
 					for(aux = 0; aux < 17; aux++) {
-						/*printf("%s\n", instrucoes[aux].mnemonico);*/
 						if(strcmp(argGen, instrucoes[aux].mnemonico) == 0) {
 							if(aux != 3 && aux != 12 && aux != 13) {
 								if(ler(ent, &argGen2, &pulou, linha) == 0)
@@ -553,7 +580,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 									if(isInstArg(argGen2, linha, 0, 1023) == 0)
 										codigoErro = -1;
 									else {
-										/* avancar */
 										if(lado == 1) {
 											palavra++;
 											lado = 0;
@@ -575,7 +601,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 								}
 							}
 							else {
-								/* avancar */
 								if(lado == 1) {
 									palavra++;
 									lado = 0;
@@ -613,7 +638,6 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 			printf("Erro na linha %d: %c eh um caractere invalido\n", linha, letra);
 			codigoErro = -1;
 		}
-		/*printf("P1    Palavra: %d Lado: %d\n", palavra, lado);*/
 	}
 	fclose(ent);
 	return codigoErro;

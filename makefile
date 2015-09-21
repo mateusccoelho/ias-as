@@ -26,7 +26,7 @@ main.o: main.c
 	gcc -c main.c -o main.o
 	
 prog: argumentos.o dados.o leitura.o listaRot.o listaCon.o metodos.o listaPal.o main.o saida.o
-	gcc dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o listaPal.o leitura.o saida.o -o prog
+	gcc -g dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o listaPal.o leitura.o saida.o -o prog
 
 clean:
 	rm -f dados.o listaRot.o listaCon.o main.o metodos.o argumentos.o leitura.o listaPal.o saida.o prog

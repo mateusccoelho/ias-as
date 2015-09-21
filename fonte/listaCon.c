@@ -72,9 +72,11 @@ void lstCon_imprimir(NoLstCon *lista) {
 
 /* Remove todos os nos da lista. */
 void lstCon_removerTudo(NoLstCon* lista) {
-	NoLstCon *aux;
+	NoLstCon *aux, *aux2;
 	
-	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
+	for(aux = lista -> prox; aux != NULL; aux = aux2) {
+		aux2 = aux -> prox;
 		lstCon_remover(aux);
 	}
+	free(lista);
 }

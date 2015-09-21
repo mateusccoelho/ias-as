@@ -44,6 +44,7 @@ char* decToHex(long int decimal, int tam) {
 		}
 		aux[i] = '\0';
 		
+		free(hex);
 		return aux;
 	}
 }
@@ -126,8 +127,6 @@ int isRotulo(char *dado) {
 	}
 	return 0;
 }
-
-
 
 int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 	int aux;

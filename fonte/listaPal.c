@@ -71,11 +71,13 @@ void lstPal_imprimir(NoLstPal *lista) {
 
 /* Remove todos os nos da lista. */
 void lstPal_removerTudo(NoLstPal* lista) {
-	NoLstPal *aux;
+	NoLstPal *aux, *aux2;
 	
-	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
+	for(aux = lista -> prox; aux != NULL; aux = aux2) {
+		aux2 = aux -> prox;
 		lstPal_remover(aux);
 	}
+	free(lista);
 }
 
 void lstPal_ordenar(NoLstPal *lista) {

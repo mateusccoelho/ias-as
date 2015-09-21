@@ -17,7 +17,7 @@ typedef struct NoLstCon NoLstCon;
 /* Remove uma constante da lista. */
 void lstCon_remover(NoLstCon *alvo);
 
-/* Procura o constante com um nome apelido especifico e retorna-o. */
+/* Procura a constante com um nome apelido especifico e retorna-o. */
 NoLstCon* lstCon_procurar(NoLstCon* lista, char *nome);
 
 /* Insere um novo no aa lista, o que corresponde a uma nova constante.

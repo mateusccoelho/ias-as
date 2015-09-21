@@ -5,11 +5,7 @@
 #include "/home/mateus/Unicamp/MC404/trab01/headers/listaPal.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/dados.h"
 #include "/home/mateus/Unicamp/MC404/trab01/headers/saida.h"
-
-int mapearRotulos(char *nomeArq, NoLstRot *lstRot);
-int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal);
-int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum);
-char* decToHex(char* decimal);
+#include "/home/mateus/Unicamp/MC404/trab01/headers/metodos.h"
 
 int main (int argc, char *argv[]) {
 	
@@ -25,7 +21,6 @@ int main (int argc, char *argv[]) {
 	if(codigo == 0) {
 		codigo = gerarMapa(argv[1], lstRot, lstPal);
 		if(codigo == 0) {
-			/*lstPal_imprimir(lstPal);*/
 			lstPal_ordenar(lstPal);
 			if(argc == 2)
 				imprimirTela(lstPal);
@@ -34,6 +29,7 @@ int main (int argc, char *argv[]) {
 		}
 	}
 		
+	lstPal_removerTudo(lstPal);
 	
 	return codigo; 
 }

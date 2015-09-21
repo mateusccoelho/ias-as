@@ -72,9 +72,11 @@ void lstRot_imprimir(NoLstRot *lista) {
 
 /* Remove todos os nos da lista. */
 void lstRot_removerTudo(NoLstRot* lista) {
-	NoLstRot *aux;
+	NoLstRot *aux, *aux2;
 	
-	for(aux = lista -> prox; aux != NULL; aux = aux -> prox) {
+	for(aux = lista -> prox; aux != NULL; aux = aux2) {
+		aux2 = aux -> prox;
 		lstRot_remover(aux);
 	}
+	free(lista);
 }
