@@ -163,14 +163,11 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 					for(i = 0; i < aux; i++) {
 						if(argGen2[0] == '0' && argGen2[1] == 'x') /* numero hexadecimal */
 							lstPal_inserir(lstPal, palavra, argGen2+2);
-						else if(argGen2[0] >= 48 && argGen2[0] <= 57) { /* numero dec positivo */
+						else if((argGen2[0] >= 48 && argGen2[0] <= 57) || argGen2[0] == '-') { /* numero dec positivo */
 							auxS = decToHex(atol(argGen2), 10);
 							lstPal_inserir(lstPal, palavra, auxS);
 							if(strcmp(auxS, "0000000000") != 0)
 								free(auxS);
-						}
-						else if(argGen2[0] == '-') { /* numero dec negativo */
-							printf("falta implementar\n");						
 						}
 						else if(isRotulo(argGen2) == 1) {
 							auxR = lstRot_procurar(lstRot, argGen2);
