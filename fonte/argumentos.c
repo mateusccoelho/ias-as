@@ -136,7 +136,7 @@ int isArg(int codigo, char* dado, int linha, int min, unsigned int max) {
 			return 1;
 		}
 		else {
-			fprintf(stderr, "ERROR on line %d\n\"%s\" nao eh uma palavra valida\n", linha, dado);
+			fprintf(stderr, "ERROR on line %d\n\"%s\" eh um rotulo ou constante invalida\n", linha, dado);
 			return 0;
 		}
 	}

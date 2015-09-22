@@ -11,7 +11,6 @@
 
 /* To-Do:
  * 1. implementar conversao de numero decimal negativo
- * 3. bugs de sobrescrever linhas e palavra ultrapassar 1024
  */
 
 int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
@@ -30,7 +29,15 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 	memoria[0] = '\0';
 	
 	while(fscanf(ent, "%c", &letra) != EOF && codigoErro == 0) {
-		if(letra == '.') {
+		if(lstPal_procurar(lstPal, palavra) != NULL) {
+			fprintf(stderr, "ERROR on line %d\nA palavra %d ja foi montada anteriormente\n", linha, palavra);
+			codigoErro = -1;
+		}
+		else if(palavra == 1024) {
+			fprintf(stderr, "ERROR on line %d\nA palavra atual eh maior do que 1023\n", linha);
+			codigoErro = -1;
+		}
+		else if(letra == '.') {
 			fscanf(ent, "%s", comando);
 			if(strcmp(comando, "align") == 0) {
 				/* OK */
@@ -64,9 +71,15 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				/* OK */
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
-				lstCon_inserir(lstCon, argGen, argGen2);
-				if(pulou == 1)
-					linha++;
+				if(lstCon_procurar(lstCon, argGen) != NULL) {
+					fprintf(stderr, "ERROR on line %d\nConstante \"%s\" ja foi inicializado anteriormente\n", linha, argGen);
+					codigoErro = -1;
+				}
+				else {
+					lstCon_inserir(lstCon, argGen, argGen2);
+					if(pulou == 1)
+						linha++;
+				}
 				free(argGen2);
 				free(argGen);
 			}
@@ -142,51 +155,60 @@ int gerarMapa(char *nomeArq, NoLstRot *lstRot, NoLstPal *lstPal) {
 				ler(ent, &argGen, &pulou, linha);
 				ler(ent, &argGen2, &pulou, linha);
 				aux = atoi(argGen);
-				for(i = 0; i < aux; i++) {
-					if(argGen2[0] == '0' && argGen2[1] == 'x')
-						lstPal_inserir(lstPal, palavra, argGen2+2);
-					else if(argGen2[0] >= 48 && argGen2[0] <= 57) {
-						auxS = decToHex(atol(argGen2), 10);
-						lstPal_inserir(lstPal, palavra, auxS);
-						if(strcmp(auxS, "0000000000") != 0)
-							free(auxS);
-					}
-					else if(isRotulo(argGen2) == 1) {
-						auxR = lstRot_procurar(lstRot, argGen2);
-						if(auxR == NULL) {
-							fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" nao foi encontrado\n", linha, argGen2);
-							codigoErro = -1;
-							break;
-						}
-						else {
-							auxS = decToHex(auxR -> local -> palavra, 10);
+				if(palavra + aux > 1023) {
+					fprintf(stderr, "ERROR on line %d\nDiretiva wfill estora o limite de palavas do computador\n", linha);
+					codigoErro = -1;
+				}
+				else {
+					for(i = 0; i < aux; i++) {
+						if(argGen2[0] == '0' && argGen2[1] == 'x') /* numero hexadecimal */
+							lstPal_inserir(lstPal, palavra, argGen2+2);
+						else if(argGen2[0] >= 48 && argGen2[0] <= 57) { /* numero dec positivo */
+							auxS = decToHex(atol(argGen2), 10);
 							lstPal_inserir(lstPal, palavra, auxS);
 							if(strcmp(auxS, "0000000000") != 0)
 								free(auxS);
 						}
-					}
-					else {
-						auxC = lstCon_procurar(lstCon, argGen2);
-						if(auxC == NULL) {
-							fprintf(stderr, "ERROR on line %d\nConstante \"%s\" nao foi encontrada\n", linha, argGen2);
-							codigoErro = -1;
-							break;
+						else if(argGen2[0] == '-') { /* numero dec negativo */
+							printf("falta implementar\n");						
 						}
-						else {
-							if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
-								lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
+						else if(isRotulo(argGen2) == 1) {
+							auxR = lstRot_procurar(lstRot, argGen2);
+							if(auxR == NULL) {
+								fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" nao foi encontrado\n", linha, argGen2);
+								codigoErro = -1;
+								break;
+							}
 							else {
-								auxS = decToHex(atol(auxC -> local -> real), 10);
+								auxS = decToHex(auxR -> local -> palavra, 10);
 								lstPal_inserir(lstPal, palavra, auxS);
 								if(strcmp(auxS, "0000000000") != 0)
 									free(auxS);
 							}
 						}
+						else { /* eh constante */
+							auxC = lstCon_procurar(lstCon, argGen2);
+							if(auxC == NULL) {
+								fprintf(stderr, "ERROR on line %d\nConstante \"%s\" nao foi encontrada\n", linha, argGen2);
+								codigoErro = -1;
+								break;
+							}
+							else {
+								if((auxC -> local -> real)[0] == '0' && (auxC -> local -> real)[1] == 'x')
+									lstPal_inserir(lstPal, palavra, (auxC -> local -> real)+2);
+								else {
+									auxS = decToHex(atol(auxC -> local -> real), 10);
+									lstPal_inserir(lstPal, palavra, auxS);
+									if(strcmp(auxS, "0000000000") != 0)
+										free(auxS);
+								}
+							}
+						}
+						palavra++;
 					}
-					palavra++;
+					if(pulou == 1)
+						linha++;
 				}
-				if(pulou == 1)
-					linha++;
 				free(argGen2);
 				free(argGen);
 			}
@@ -310,9 +332,9 @@ int verificarLinha(int *tipos, char* ordem, int linha, int ordemNum) {
 	int i;
 	for(i = 0; i < 3; i++) {
 		if(tipos[i] > 1) {
-			if(i = 0)	
+			if(i == 0)	
 				fprintf(stderr, "ERROR on line %d\nLinha com mais de um rotulo\n", linha);
-			else if(i = 1)
+			else if(i == 1)
 				fprintf(stderr, "ERROR on line %d\nLinha com mais de uma diretiva\n", linha);
 			else
 				fprintf(stderr, "ERROR on line %d\nLinha com mais de uma instrucao\n", linha);
@@ -549,16 +571,21 @@ int mapearRotulos(char *nomeArq, NoLstRot *lstRot) {
 					codigoErro = -1;
 				else {
 					argGen[aux - 1] = ':';
-					lstRot_inserir(lstRot, argGen, palavra, lado);
-					
-					tipos[0]++;
-					if(ordemNum < 2)
-						ordem[ordemNum] = 'r';
-					ordemNum++;
-					if(letra == '\n' && codigoErro == 0) {
-						codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
-						linha++;
-						ordemNum = 0;
+					if(lstRot_procurar(lstRot, argGen) != NULL) {
+						fprintf(stderr, "ERROR on line %d\nRotulo \"%s\" ja foi inicializado anteriormente\n", linha, argGen);
+						codigoErro = -1;
+					}
+					else {
+						lstRot_inserir(lstRot, argGen, palavra, lado);
+						tipos[0]++;
+						if(ordemNum < 2)
+							ordem[ordemNum] = 'r';
+						ordemNum++;
+						if(letra == '\n') {
+							codigoErro = verificarLinha(tipos, ordem, linha, ordemNum);
+							linha++;
+							ordemNum = 0;
+						}					
 					}
 				}
 			}
